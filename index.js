@@ -22,7 +22,19 @@ fetch('http://localhost:3000/films/1')
     document.body.appendChild(tickets);
   })
 
- 
+const filmsList = document.querySelector('#films');
+ fetch('http://localhost:3000/films')
+    .then(response => response.json())
+    .then(films => {
+      filmsList.innerHTML = '';
+        films.forEach(film => {
+        const li = document.createElement('li');
+        li.classList.add('film', 'item');
+        li.textContent = film.title;
+        filmsList.appendChild(li);
+      });
+    });
+  
 
 
 
