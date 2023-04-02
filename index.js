@@ -1,39 +1,119 @@
-fetch('http://localhost:3000/films/1')
-  .then(response => response.json())
-  .then(data => {
-    const poster = document.createElement('img');
-    poster.src = data.poster;
-    document.body.appendChild(poster);
-    const title = document.createElement('h1');
-    title.textContent = data.title;
-    document.body.appendChild(title);
-
-    const runtime = document.createElement('p');
-    runtime.textContent = `Runtime: ${data.runtime} minutes`;
-    document.body.appendChild(runtime);
-
-    const showtime = document.createElement('p');
-    showtime.textContent = `Showtime: ${data.showtime}`;
-    document.body.appendChild(showtime);
-
-    const availableTickets = data.capacity - data.tickets_sold;
-    const tickets = document.createElement('p');
-    tickets.textContent = `Available Tickets: ${availableTickets}`;
-    document.body.appendChild(tickets);
-  })
-
-const filmsList = document.querySelector('#films');
- fetch('http://localhost:3000/films')
-    .then(response => response.json())
-    .then(films => {
-      filmsList.innerHTML = '';
-        films.forEach(film => {
-        const li = document.createElement('li');
-        li.classList.add('film', 'item');
-        li.textContent = film.title;
-        filmsList.appendChild(li);
-      });
+let fetchedData;
+    fetch("http://localhost:3000/films")
+   .then((result) => result.json())
+   .then((result2) => {
+    fetchedData = result2;
+    console.log('results --> ', result2);  
+    beginning(result2);
+   })
+   .catch((error) => console.log(error));
+   
+   function buildCard(movie) {
+    const parentDiv = document.createElement('div');
+    parentDiv.className = 'card';
+   
+    const img = document.createElement('img');
+    img.src = movie.poster;
+    img.style = 'width:50%';
+    
+   
+    const innerDiv = document.createElement('div');
+    innerDiv.className = 'container';
+   
+    const h4 = document.createElement('h4');
+    h4.textContent = movie.name;
+   
+    const availableTickets = movie.capacity - movie.tickets_sold;
+   
+    const p = document.createElement('p');
+    p.textContent = availableTickets ? `Tickets available ${availableTickets}` : 'Tickets sold out';
+   
+    const btn = document.createElement('button');
+    btn.textContent = `Buy Ticket`;
+    btn.id = `${movie.id} ${movie.tickets_sold} btn`;
+    btn.disabled = !availableTickets;
+   
+    const button2 = document.createElement('button');
+    button2.textContent = `Delete`;
+    button2.className = `${movie.id} button-delete`;
+    button2.disabled = availableTickets;
+   
+   
+    parentDiv.append(img);
+    parentDiv.append(innerDiv);
+    innerDiv.append(h4);
+    innerDiv.append(p);
+    innerDiv.append(btn);
+    innerDiv.append(button2);
+   
+   
+    return parentDiv;
+   }
+   const beginning = (films) => {
+   
+    const mainDiv = document.createElement('div');
+    mainDiv.className = 'main';
+   
+    document.body.appendChild(mainDiv);
+   
+    films.forEach(films => {
+     const card = buildCard(films);
+     mainDiv.append(card);
     });
+    
+   };
+   
+   const clickCallback = (e) => {
+    e.preventDefault();
+    if (e.target.getAttribute('id')) {
+    const combinedIdbuy = e.target.getAttribute('id');
+    const id = combinedIdbuy?.split(" ")[0];
+    const tickets_sold = combinedIdbuy?.split(" ")[1];
+    buyTicket(id, tickets_sold);
+    
+    }
+    if (e.target.getAttribute('class')) {
+     const combinedIdbuy = e.target.getAttribute('class');
+     const id = combinedIdbuy?.split(" ")[0];
+     deleteMovie(id);
+     }
+   };
+   
+   const buyTicket = (id, tickets_sold) => {
+    fetch(`http://localhost:3000/films/${Number(id)}`, {
+    method: 'PATCH',
+    headers: {
+     "Content-Type": "application/json"
+    },
+    body: JSON.stringify(
+     {
+      id: Number(id),
+      tickets_sold: Number(tickets_sold) + 1
+     }
+    )
+   })
+   .then((result) => result.json())
+   .then((result2) => console.log(result2))
+   .catch((error) => console.log(error));
+   };
+   
+   const deleteMovie = (id) => {
+    fetch(`http://localhost:3000/films/${Number(id)}`, {
+    method: 'DELETE',
+    headers: {
+     "Content-Type": "application/json"
+    },
+   })
+   .then((result) => result.json())
+   .then((result2) => console.log(result2))
+   .catch((error) => console.log(error));
+   };
+   
+   
+   document.addEventListener('click', clickCallback);
+  
+
+
   
 
 
