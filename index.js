@@ -22,4 +22,21 @@ fetch('http://localhost:3000/films/1')
     document.body.appendChild(tickets);
   })
   .catch(error => console.error(error));
+
+
+
+const showMovies = ()=> {
+    fetch (` http://localhost:3000/films`)
+    .then(response => response.json())
+    .then(data => {
+        console.log(title);
+        console.log(poster);
+        console.log(description);
+        console.log(showtime);
+        console.log(runtime)
+    })
+}
+
+
+  
   
