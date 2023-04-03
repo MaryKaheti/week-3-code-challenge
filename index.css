@@ -15,3 +15,6 @@ h1 {
     font-size: larger;
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
+img {
+    max-width: 150px;
+}
