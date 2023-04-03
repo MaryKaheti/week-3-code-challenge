@@ -6,6 +6,8 @@ card {
 body {
     background-color: aqua;
     text-align: left;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: medium;
     
 }
 h1 {
